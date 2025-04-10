@@ -246,4 +246,12 @@ export class DatabaseStorage implements IStorage {
     const randomIndex = Math.floor(Math.random() * tips.length);
     return tips[randomIndex];
   }
+  
+  async createHydrationTip(tip: InsertHydrationTip): Promise<HydrationTip> {
+    const [newTip] = await db
+      .insert(hydrationTips)
+      .values(tip)
+      .returning();
+    return newTip;
+  }
 }

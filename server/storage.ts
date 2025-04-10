@@ -52,6 +52,7 @@ export interface IStorage {
   // Hydration tip methods
   getHydrationTips(): Promise<HydrationTip[]>;
   getRandomHydrationTip(category?: string): Promise<HydrationTip | undefined>;
+  createHydrationTip(tip: InsertHydrationTip): Promise<HydrationTip>;
 }
 
 export const storage = new DatabaseStorage();

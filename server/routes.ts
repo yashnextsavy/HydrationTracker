@@ -8,7 +8,8 @@ import {
   getWaterHistorySchema, 
   createReminderMessageSchema,
   updateReminderMessageSchema,
-  hydrationTips
+  hydrationTips,
+  type InsertHydrationTip
 } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { setupAuth } from "./auth";
@@ -438,7 +439,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update the achievement
       const updatedAchievement = await storage.updateAchievement(achievementId, {
         achieved: true,
-        achievedDate: new Date().toISOString()
+        achievedDate: new Date()
       });
       
       res.json(updatedAchievement);
@@ -638,7 +639,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Create all tips
         for (const tip of defaultTips) {
-          await db.insert(hydrationTips).values(tip);
+          await storage.createHydrationTip(tip as InsertHydrationTip);
         }
         
         // Return created tips
