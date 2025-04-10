@@ -32,11 +32,14 @@ export default function WaterHistory() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['/api/water-intake/history', startDate, endDate],
-    queryFn: () => getQueryFn<WaterHistoryResponse>({ on401: "throw" })('/api/water-intake/history', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ startDate, endDate })
-    }),
+    queryFn: async () => {
+      const queryFn = getQueryFn<WaterHistoryResponse>({ on401: "throw" });
+      return queryFn('/api/water-intake/history', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ startDate, endDate })
+      });
+    },
     enabled: !!startDate && !!endDate
   });
 

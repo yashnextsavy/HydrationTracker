@@ -9,7 +9,7 @@ import {
   createReminderMessageSchema,
   updateReminderMessageSchema,
   hydrationTips,
-  type InsertHydrationTip
+  type HydrationTip
 } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { setupAuth } from "./auth";
@@ -639,7 +639,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Create all tips
         for (const tip of defaultTips) {
-          await storage.createHydrationTip(tip as InsertHydrationTip);
+          await storage.createHydrationTip(tip as Omit<HydrationTip, "id">);
         }
         
         // Return created tips

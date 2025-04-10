@@ -247,7 +247,7 @@ export class DatabaseStorage implements IStorage {
     return tips[randomIndex];
   }
   
-  async createHydrationTip(tip: InsertHydrationTip): Promise<HydrationTip> {
+  async createHydrationTip(tip: Omit<HydrationTip, "id">): Promise<HydrationTip> {
     const [newTip] = await db
       .insert(hydrationTips)
       .values(tip)
