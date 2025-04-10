@@ -2,11 +2,15 @@ import {
   users, type User, type InsertUser,
   settings, type Settings, type InsertSettings,
   waterIntake, type WaterIntake, type InsertWaterIntake,
-  reminderSettings, type ReminderSettings, type InsertReminderSettings
+  reminderSettings, type ReminderSettings, type InsertReminderSettings,
+  streaks, type Streak, type InsertStreak,
+  achievements, type Achievement, type InsertAchievement,
+  reminderMessages, type ReminderMessage, type InsertReminderMessage,
+  hydrationTips, type HydrationTip, type InsertHydrationTip
 } from "@shared/schema";
 import { IStorage } from "./storage";
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, between, or, sql } from "drizzle-orm";
 
 // Database storage implementation
 export class DatabaseStorage implements IStorage {
