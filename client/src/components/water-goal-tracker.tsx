@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { loadWaterIntake, saveWaterIntake } from "@/lib/localStorageUtils";
+import { Settings, WaterIntake } from "@shared/schema";
 
 type WaterStats = {
   totalIntake: number;
@@ -17,25 +18,36 @@ export default function WaterGoalTracker() {
   });
   
   // Fetch settings and water intake
-  const { data: settingsData } = useQuery({
-    queryKey: ["/api/settings"],
+  const { data: settingsData } = useQuery<{ dailyGoal: number }>({
+    queryKey: ["/api/settings"]
   });
   
-  const { data: waterData, isLoading } = useQuery({
-    queryKey: ["/api/water-intake"],
-    onSuccess: (data) => {
-      if (data) {
-        saveWaterIntake(data.totalIntake);
-      }
-    },
-    onError: () => {
-      // If API fails, load from local storage
-      const savedIntake = loadWaterIntake();
-      if (savedIntake !== null) {
-        setStats(prev => ({ ...prev, totalIntake: savedIntake }));
-      }
+  // Update stats when settings data changes
+  useEffect(() => {
+    if (settingsData?.dailyGoal) {
+      setStats(prev => ({ ...prev, dailyGoal: settingsData.dailyGoal }));
     }
+  }, [settingsData]);
+  
+  const { data: waterData, isLoading } = useQuery<{ totalIntake: number, intakes: any[] }>({
+    queryKey: ["/api/water-intake"]
   });
+  
+  // Update stats when water data changes
+  useEffect(() => {
+    if (waterData?.totalIntake !== undefined) {
+      saveWaterIntake(waterData.totalIntake);
+      setStats(prev => ({ ...prev, totalIntake: waterData.totalIntake }));
+    }
+  }, [waterData]);
+  
+  // Fallback to local storage if API calls fail
+  useEffect(() => {
+    const savedIntake = loadWaterIntake();
+    if (savedIntake !== null && !waterData) {
+      setStats(prev => ({ ...prev, totalIntake: savedIntake }));
+    }
+  }, [waterData]);
   
   // Add water mutation
   const addWaterMutation = useMutation({
@@ -47,16 +59,7 @@ export default function WaterGoalTracker() {
     },
   });
   
-  // Update stats when data changes
-  useEffect(() => {
-    if (settingsData) {
-      setStats(prev => ({ ...prev, dailyGoal: settingsData.dailyGoal }));
-    }
-    
-    if (waterData) {
-      setStats(prev => ({ ...prev, totalIntake: waterData.totalIntake }));
-    }
-  }, [settingsData, waterData]);
+
   
   // Calculate progress
   const progress = Math.min(100, (stats.totalIntake / stats.dailyGoal) * 100);
