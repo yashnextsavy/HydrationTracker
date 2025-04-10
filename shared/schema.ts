@@ -5,6 +5,7 @@ import { z } from "zod";
 // User settings
 export const settings = pgTable("settings", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
   dailyGoal: real("daily_goal").notNull().default(2.5),
   defaultCupSize: integer("default_cup_size").notNull().default(350),
   soundEnabled: boolean("sound_enabled").notNull().default(false),
