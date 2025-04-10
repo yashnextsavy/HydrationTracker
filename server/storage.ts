@@ -2,7 +2,11 @@ import {
   users, type User, type InsertUser,
   settings, type Settings, type InsertSettings,
   waterIntake, type WaterIntake, type InsertWaterIntake,
-  reminderSettings, type ReminderSettings, type InsertReminderSettings
+  reminderSettings, type ReminderSettings, type InsertReminderSettings,
+  streaks, type Streak, type InsertStreak,
+  achievements, type Achievement, type InsertAchievement,
+  reminderMessages, type ReminderMessage, type InsertReminderMessage,
+  hydrationTips, type HydrationTip
 } from "@shared/schema";
 import { DatabaseStorage } from "./database-storage";
 
